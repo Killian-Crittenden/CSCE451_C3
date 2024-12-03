@@ -31,7 +31,10 @@ class FileActivityHandler(FileSystemEventHandler):
         if os.path.exists(src_path):
             file_name = os.path.basename(src_path)
             backup_path = os.path.join(self.backup_dir, file_name)
-            shutil.copy2(src_path, backup_path)
+            try:
+                shutil.copy2(src_path, backup_path)
+            except shutil.SameFileError:
+                pass
             print(f"Backup created for: {src_path} at {backup_path}")
 
     def on_created(self, event):
