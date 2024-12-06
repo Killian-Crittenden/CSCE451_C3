@@ -77,7 +77,7 @@ class FileActivityHandler(FileSystemEventHandler):
 
 def main():
     # Directory to monitor and backup location
-    directory_to_monitor = "."
+    directory_to_monitor = "/"
     backup_directory = "./backup"
     no_delete = False
 
@@ -104,13 +104,17 @@ def main():
     except KeyboardInterrupt:
         print("Monitoring stopped.")
         observer.stop()
+        pass
 
     observer.join()
 
     if (no_delete):
         result = subprocess.run(["sudo", "chattr", "-R", "-a", "."], capture_output=True, text=True)
 
+    print("Program exiting")
+
 
 
 if __name__ == "__main__":
     main()
+
