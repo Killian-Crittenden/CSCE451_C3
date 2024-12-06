@@ -49,6 +49,18 @@ def analyze_packet(packet, interface):
             dst_port = packet.tcp.dstport if 'TCP' in packet else packet.udp.dstport
             print(f"[{interface}] {timestamp} - {src_ip}:{src_port} -> {dst_ip}:{dst_port} - Protocol: {protocol} - Length: {length} bytes")
 
+        # Log ICMP traffic
+        if 'ICMP' in packet:
+            src_ip = packet.ip.src
+            dst_ip = packet.ip.dst
+            icmp_type = packet.icmp.type if hasattr(packet.icmp, 'type') else "Unknown"
+            icmp_code = packet.icmp.code if hasattr(packet.icmp, 'code') else "Unknown"
+            icmp_desc = "Echo Request" if icmp_type == "8" else "Echo Reply" if icmp_type == "0" else f"Type {icmp_type}, Code {icmp_code}"
+            print(f"[{interface}] {timestamp} - ICMP {icmp_desc} - {src_ip} -> {dst_ip} - Length: {length} bytes")
+            return
+
+
+
     except AttributeError:
         # Ignore packets without relevant details
         pass
@@ -67,7 +79,7 @@ def capture_packets(stop_event):
         # Use a Pyshark LiveCapture with filtering for specific protocols
         capture = pyshark.LiveCapture(
             interface=interface,
-            display_filter="dns or http or tls or tcp or udp"
+            display_filter="dns or http or tls or tcp or udp or icmp"
         )
 
         for packet in capture.sniff_continuously():
