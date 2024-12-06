@@ -59,20 +59,17 @@ def analyze_packet(packet, interface):
             print(f"[{interface}] {timestamp} - ICMP {icmp_desc} - {src_ip} -> {dst_ip} - Length: {length} bytes")
             return
 
-
-
     except AttributeError:
         # Ignore packets without relevant details
         pass
 
 
-def capture_packets(stop_event):
+def capture_packets(interface):
     """
-    Capture packets on the 'eth0' network interface and analyze them.
+    Continuously capture packets on the specified network interface and analyze them.
 
-    :param stop_event: Event to signal capture termination.
+    :param interface: The network interface to monitor.
     """
-    interface = "eth0"
     try:
         print(f"Starting capture on interface '{interface}'...")
 
@@ -83,25 +80,24 @@ def capture_packets(stop_event):
         )
 
         for packet in capture.sniff_continuously():
-            if stop_event.is_set():
-                print(f"Stopping capture on '{interface}'.")
-                break
-
             analyze_packet(packet, interface)
 
+    except KeyboardInterrupt:
+        print("\nCtrl+C detected. Stopping capture.")
     except Exception as e:
         print(f"Error capturing on interface '{interface}': {e}")
     finally:
         print(f"Capture on '{interface}' finished.")
 
 
-def run_executable_and_capture(executable_path):
+def run_executable_and_capture(executable_path, interface):
     """
-    Run the executable and capture traffic on the 'eth0' interface.
+    Run the executable and continuously capture traffic on the specified interface.
 
     :param executable_path: Path to the executable to monitor.
+    :param interface: The network interface to monitor.
     """
-    print(f"Capturing on 'eth0' and running executable: {executable_path}")
+    print(f"Capturing on '{interface}' and running executable: {executable_path}")
     
     # Run the executable as a subprocess
     try:
@@ -112,20 +108,15 @@ def run_executable_and_capture(executable_path):
         print(f"Error running the executable: {e}")
         sys.exit(1)
 
-    # Start capturing traffic
-    stop_event = Event()
-    capture_process = Process(target=capture_packets, args=(stop_event,))
-    capture_process.start()
-
-    # Wait for the executable process to finish or handle interruption
+    # Start capturing traffic in a while loop
     try:
+        capture_packets(interface)
         executable_process.wait()
         print("Executable process finished.")
     except KeyboardInterrupt:
-        print("\nKeyboardInterrupt detected. Stopping capture.")
+        print("\nCtrl+C detected. Stopping executable and capture.")
     finally:
-        stop_event.set()
-        capture_process.join()
+        executable_process.terminate()
 
 
 def main():
@@ -135,8 +126,11 @@ def main():
         print("Error: Executable path is required.")
         sys.exit(1)
 
-    # Run the executable and capture traffic on 'eth0'
-    run_executable_and_capture(executable_path)
+    # Get the interface to monitor
+    interface = input("Enter the network interface to monitor (default: eth0): ").strip() or "eth0"
+
+    # Run the executable and capture traffic on the specified interface
+    run_executable_and_capture(executable_path, interface)
 
 
 if __name__ == "__main__":

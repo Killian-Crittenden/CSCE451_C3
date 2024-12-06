@@ -3,7 +3,7 @@ import subprocess
 import time
 
 class ProcessMonitor:
-    def __init__(self, log_file="process_log.txt", interval=1):
+    def __init__(self, log_file="process_log.txt", interval=0.1):
         self.log_file = log_file
         self.interval = interval  # Time interval between checks (in seconds)
         self.existing_pids = set()
