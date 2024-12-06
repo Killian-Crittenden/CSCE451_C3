@@ -6,6 +6,7 @@ from watchdog.events import FileSystemEventHandler
 import time
 import subprocess
 import sys
+import psutil
 
 
 class FileActivityHandler(FileSystemEventHandler):
