@@ -4,6 +4,8 @@ import shutil
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
+import subprocess
+import sys
 
 
 class FileActivityHandler(FileSystemEventHandler):
@@ -30,12 +32,16 @@ class FileActivityHandler(FileSystemEventHandler):
         """Backup a file to the backup directory."""
         if os.path.exists(src_path):
             file_name = os.path.basename(src_path)
-            backup_path = os.path.join(self.backup_dir, file_name)
+            backup_path = os.path.join(self.backup_dir, file_name)    
             try:
                 shutil.copy2(src_path, backup_path)
             except shutil.SameFileError:
                 pass
+            except FileNotFoundError:
+                print("File was not found when backup was trying to be made")
+                return -1
             print(f"Backup created for: {src_path} at {backup_path}")
+            return 0
 
     def on_created(self, event):
         """Handle file creation events."""
@@ -44,7 +50,8 @@ class FileActivityHandler(FileSystemEventHandler):
             print(f"File created: {file_path}")
             new_hash = self.compute_hash(file_path)
             if new_hash:
-                self.backup_file(file_path)
+                if self.backup_file(file_path) == -1:
+                    print("On file creation backup threw an error")
                 self.file_hashes[file_path] = new_hash
 
     def on_modified(self, event):
@@ -55,7 +62,8 @@ class FileActivityHandler(FileSystemEventHandler):
             # Check if the hash has changed
             if file_path not in self.file_hashes or self.file_hashes[file_path] != new_hash:
                 print(f"File modified: {file_path}")
-                self.backup_file(file_path)
+                if self.backup_file(file_path) == -1:
+                    print("On file modification backup threw an error")
                 self.file_hashes[file_path] = new_hash
 
     def on_deleted(self, event):
@@ -71,6 +79,15 @@ def main():
     # Directory to monitor and backup location
     directory_to_monitor = "."
     backup_directory = "./backup"
+    no_delete = False
+
+    if len(sys.argv) > 1:
+        for i in range(len(sys.argv)):
+            if (sys.argv[i]) == "-d":
+                print("no delete mode activated")
+                no_delete = True
+                result = subprocess.run(["sudo", "chattr", "-R", "+a", "."], capture_output=True, text=True)
+
 
     # Create an event handler and observer
     handler = FileActivityHandler(backup_dir=backup_directory)
@@ -89,6 +106,10 @@ def main():
         observer.stop()
 
     observer.join()
+
+    if (no_delete):
+        result = subprocess.run(["sudo", "chattr", "-R", "-a", "."], capture_output=True, text=True)
+
 
 
 if __name__ == "__main__":
