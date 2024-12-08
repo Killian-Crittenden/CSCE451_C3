@@ -188,7 +188,7 @@ def capture_packets(log_file):
                     log_entry = (f"[Packet Capture] Interface: {captured_interface} - {timestamp} - {protocol} - "
                                  f"Length: {length} bytes - Source: {src_ip}, Destination: {dst_ip}\n")
                     f.write(log_entry)
-                    print(log_entry.strip())
+                    # print(log_entry.strip())
                 except AttributeError:
                     # Handle packets without IP attributes or missing fields
                     continue
