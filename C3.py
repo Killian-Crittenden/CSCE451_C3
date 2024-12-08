@@ -105,7 +105,7 @@ class FileActivityHandler(FileSystemEventHandler):
                 if os.path.commonpath([src_path, self.backup_dir]) == self.backup_dir:
                     return 0
             except:
-                return 0
+                pass
             try:
                 shutil.copy2(src_path, backup_path)
             except shutil.SameFileError:
