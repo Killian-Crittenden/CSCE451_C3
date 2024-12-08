@@ -14,6 +14,7 @@ directory_to_monitor = "."
 backup_directory = "./backup"
 process_log = os.path.join(backup_directory, "process_log.txt")
 network_trace_log = os.path.join(backup_directory, "network_trace_log.txt")
+
 class ProcessMonitor:
     def __init__(self, log_file="process_log.txt", interval=0.01):
         self.log_file = log_file
@@ -57,24 +58,26 @@ class ProcessMonitor:
             proc = psutil.Process(pid)
             log_entry = (f"[psutil] New Process Detected - PID: {pid}, Name: {proc.name()}, "
                          f"Command: {proc.cmdline()}, Timestamp: {time.ctime(proc.create_time())}\n")
-            print(log_entry.strip())
+            #print(log_entry.strip())
             with open(self.log_file, "a") as f:
                 f.write(log_entry)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            print(f"[psutil] Process {pid} terminated before it could be logged.")
+            #print(f"[psutil] Process {pid} terminated before it could be logged.")
+            pass
 
     def log_process_details_subprocess(self, pid, command):
         """Log details of a new process using subprocess."""
         log_entry = f"[subprocess] New Process Detected - PID: {pid}, Command: {command}, Timestamp: {time.ctime()}\n"
-        print(log_entry.strip())
+        #print(log_entry.strip())
         with open(self.log_file, "a") as f:
             f.write(log_entry)
+
 class FileActivityHandler(FileSystemEventHandler):
     def __init__(self, backup_dir):
         self.backup_dir = backup_dir
         self.file_hashes = {}  # Dictionary to track file hashes
 
-        # Ensure the backup directory exists
+        # Create backup directory if not exist
         if not os.path.exists(backup_dir):
             os.makedirs(backup_dir)
 
@@ -203,13 +206,23 @@ def start_packet_capture_thread(log_file):
 
 def main():
     no_delete = False
+    dir_specified = False
+    observers = []
 
     if len(sys.argv) > 1:
         for i in range(len(sys.argv)):
-            if (sys.argv[i]) == "-d":
+            if (sys.argv[i]) == "-n":
                 print("no delete mode activated")
                 no_delete = True
                 result = subprocess.run(["sudo", "chattr", "-R", "+a", "."], capture_output=True, text=True)
+            if (sys.argv[i]) == "-d":
+                dir_specified = True
+                dir = sys.argv[i+1]
+                handler = FileActivityHandler(backup_dir=backup_directory)
+                observer = Observer()
+                observer.schedule(handler, path=dir, recursive=True)
+                observers.append(observer)
+
 
     # Ensure log files are cleared at startup
     with open(network_trace_log, "w") as f:
@@ -218,14 +231,18 @@ def main():
 
 
     # Create an event handler and observer
-    handler = FileActivityHandler(backup_dir=backup_directory)
-    observer = Observer()
-    observer.schedule(handler, path=directory_to_monitor, recursive=True)
+    if (dir_specified == False):
+        handler = FileActivityHandler(backup_dir=backup_directory)
+        observer = Observer()
+        observer.schedule(handler, path=directory_to_monitor, recursive=True)
+        observers.append(observer)
 
     start_packet_capture_thread(network_trace_log)
 
     # Start the observer
-    observer.start()
+    for i in range(len(observers)):
+        observers[i].start()
+    
     pmonitor = ProcessMonitor(log_file=process_log)
     pmonitor.update_existing_processes()
     print("Monitoring started. Press Ctrl+C to stop.")
@@ -252,7 +269,8 @@ def main():
                 time.sleep(pmonitor.interval)
     except KeyboardInterrupt:
         print("Monitoring stopped.")
-        observer.stop()
+        for i in range(len(observers)):
+            observers[i].stop()
         pass
 
     observer.join()
@@ -270,4 +288,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
