@@ -101,8 +101,11 @@ class FileActivityHandler(FileSystemEventHandler):
                 file_name = f"{os.path.splitext(file_name)[0]}_{timestamp}{os.path.splitext(file_name)[1]}"
     
             backup_path = os.path.join(self.backup_dir, file_name)
-            if os.path.commonpath([src_path, self.backup_dir]) == self.backup_dir:
-                return 0    
+            try:
+                if os.path.commonpath([src_path, self.backup_dir]) == self.backup_dir:
+                    return 0
+            except:
+                return 0
             try:
                 shutil.copy2(src_path, backup_path)
             except shutil.SameFileError:
