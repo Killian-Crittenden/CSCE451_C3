@@ -12,9 +12,10 @@ import socket
 from threading import Thread
 
 directory_to_monitor = "."
-backup_directory = "./backup"
-process_log = os.path.join(backup_directory, "process_log.txt")
-network_trace_log = os.path.join(backup_directory, "network_trace_log.txt")
+backup_directory = "backup"
+backup_for_modification = False
+process_log = os.path.join("./backup", "process_log.txt")
+network_trace_log = os.path.join("./backup", "network_trace_log.txt")
 
 class ProcessMonitor:
     def __init__(self, log_file="process_log.txt", interval=0.01):
@@ -95,10 +96,16 @@ class FileActivityHandler(FileSystemEventHandler):
 
     def backup_file(self, src_path):
         """Backup a file to the backup directory."""
+        global backup_for_modification
         if os.path.exists(src_path):
             file_name = os.path.basename(src_path)
+
+            if (backup_for_modification):
+                timestamp = int(time.time() * 1000000) #convert to us
+                file_name = f"{os.path.splitext(file_name)[0]}_{timestamp}{os.path.splitext(file_name)[1]}"
+    
             backup_path = os.path.join(self.backup_dir, file_name)
-            if (src_path == backup_path or src_path == network_trace_log):
+            if os.path.commonpath([src_path, self.backup_dir]) == self.backup_dir:
                 return 0    
             try:
                 shutil.copy2(src_path, backup_path)
@@ -125,7 +132,7 @@ class FileActivityHandler(FileSystemEventHandler):
         """Handle file modification events."""
         if not event.is_directory:
             file_path = event.src_path
-            if (file_path == process_log):
+            if (file_path == process_log) or (file_path == network_trace_log):
                 return 0
             new_hash = self.compute_hash(file_path)
             # Check if the hash has changed
@@ -286,6 +293,7 @@ def start_packet_capture_thread(log_file):
 
 
 def main():
+    global backup_for_modification
     no_delete = False
     dir_specified = False
     observers = []
@@ -303,6 +311,9 @@ def main():
                 observer = Observer()
                 observer.schedule(handler, path=dir, recursive=True)
                 observers.append(observer)
+            if (sys.argv[i]) == "-b":
+                backup_for_modification = True
+                print("Enabled backup on modification")
 
 
     # Ensure log files are cleared at startup
