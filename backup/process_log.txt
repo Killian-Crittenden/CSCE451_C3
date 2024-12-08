@@ -1,0 +1,9 @@
+Process Monitor Log
+==================================================
+[subprocess] New Process Detected - PID: 4978, Command: {'ppid': 1, 'user': 'root', 'command': 'init'}, Timestamp: Sun Dec  8 11:45:04 2024
+[psutil] New Process Detected - PID: 4978, Name: init, Command: ['/init'], Timestamp: Sun Dec  8 11:45:03 2024
+[subprocess] New Process Detected - PID: 4978, Command: {'ppid': 1, 'user': 'root', 'command': 'init'}, Timestamp: Sun Dec  8 11:45:04 2024
+[subprocess] New Process Detected - PID: 5151, Command: {'ppid': 1031, 'user': 'killian', 'command': 'ls'}, Timestamp: Sun Dec  8 11:45:09 2024
+[subprocess] New Process Detected - PID: 5622, Command: {'ppid': 1, 'user': 'root', 'command': 'init'}, Timestamp: Sun Dec  8 11:45:30 2024
+[psutil] New Process Detected - PID: 5622, Name: init, Command: ['/init'], Timestamp: Sun Dec  8 11:45:29 2024
+[subprocess] New Process Detected - PID: 5622, Command: {'ppid': 1, 'user': 'root', 'command': 'init'}, Timestamp: Sun Dec  8 11:45:30 2024

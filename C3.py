@@ -43,7 +43,8 @@ class ProcessMonitor:
                 ppid = int(parts[1])
                 user = parts[2]
                 command = parts[3] if len(parts) > 3 else ""
-                processes[pid] = {'ppid': ppid, 'user': user, 'command': command}
+                if ppid != os.getpid():
+                    processes[pid] = {'ppid': ppid, 'user': user, 'command': command}
             
             return processes
         except Exception as e:
