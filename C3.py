@@ -8,6 +8,7 @@ import subprocess
 import sys
 import psutil
 import pyshark
+import socket
 from threading import Thread
 
 directory_to_monitor = "."
@@ -164,6 +165,47 @@ def get_active_interface():
             return iface
     return None  # No active interface found
 
+def get_local_ip(interface):
+    """
+    Determine the local IP address of a given network interface.
+    Args:
+        interface (str): The name of the network interface.
+    Returns:
+        str: The local IP address associated with the interface, or None if not found.
+    """
+    addrs = psutil.net_if_addrs()
+    if interface in addrs:
+        for addr in addrs[interface]:
+            if addr.family == socket.AF_INET:  # IPv4 address
+                return addr.address
+    return None
+
+
+def tcp_flags_to_string(flags):
+    """
+    Convert TCP flags from hexadecimal representation to human-readable abbreviations.
+    Args:
+        flags (str): Hexadecimal TCP flags (e.g., '0x02', '0x12', etc.).
+    Returns:
+        str: A string representing the active TCP flags (e.g., 'SYN', 'ACK', etc.).
+    """
+    flag_dict = {
+        0x01: "FIN",  # Finish
+        0x02: "SYN",  # Synchronize
+        0x04: "RST",  # Reset
+        0x08: "PSH",  # Push
+        0x10: "ACK",  # Acknowledgement
+        0x20: "URG",  # Urgent
+        0x40: "ECE",  # ECN Echo
+        0x80: "CWR",  # Congestion Window Reduced
+    }
+
+    # Convert the hexadecimal flag value to an integer
+    flag_value = int(flags, 16) if isinstance(flags, str) else flags
+    active_flags = [flag for bitmask, flag in flag_dict.items() if flag_value & bitmask]
+    
+    return ", ".join(active_flags) if active_flags else "N/A"
+
 def capture_packets(log_file):
     """
     Capture network packets and log them to the specified log file.
@@ -175,28 +217,67 @@ def capture_packets(log_file):
             print("No active network interface found. Exiting.")
             return
 
-        print(f"Starting network packet capture on interface: {interface}")
+        local_ip = get_local_ip(interface)
+        if not local_ip:
+            print(f"Could not determine local IP address for interface {interface}. Exiting.")
+            return
+
+        print(f"Starting network packet capture on interface: {interface} (Local IP: {local_ip})")
         capture = pyshark.LiveCapture(interface=interface, display_filter="dns or http or tls or tcp or udp or icmp")
-        
+
         # Log packet data continuously
         with open(log_file, "a") as f:
+            packet_count = 0  # To track packet numbers
+            protocol_counts = {}  # To track protocol counts
+
             for packet in capture.sniff_continuously():
                 try:
+                    # General details
+                    packet_count += 1
                     timestamp = packet.sniff_time
                     protocol = packet.highest_layer
                     length = packet.length
                     src_ip = packet.ip.src if hasattr(packet, "ip") else "N/A"
                     dst_ip = packet.ip.dst if hasattr(packet, "ip") else "N/A"
                     captured_interface = packet.interface_captured_on if hasattr(packet, "interface_captured_on") else interface
-                    log_entry = (f"[Packet Capture] Interface: {captured_interface} - {timestamp} - {protocol} - "
-                                 f"Length: {length} bytes - Source: {src_ip}, Destination: {dst_ip}\n")
+
+                    # Protocol-specific details
+                    src_port = packet.tcp.srcport if hasattr(packet, "tcp") else (
+                        packet.udp.srcport if hasattr(packet, "udp") else "N/A")
+                    dst_port = packet.tcp.dstport if hasattr(packet, "tcp") else (
+                        packet.udp.dstport if hasattr(packet, "udp") else "N/A")
+                    tcp_flags = tcp_flags_to_string(packet.tcp.flags) if hasattr(packet, "tcp") else "N/A"
+                    http_method = packet.http.request_method if hasattr(packet, "http") else "N/A"
+                    tls_sni = packet.tls.handshake_extensions_server_name if hasattr(packet, "tls") else "N/A"
+                    dns_query = packet.dns.qry_name if hasattr(packet, "dns") else "N/A"
+                    dns_response = packet.dns.a if hasattr(packet, "dns") else "N/A"
+
+                    # Packet direction
+                    direction = "Outbound" if src_ip == local_ip else ("Inbound" if dst_ip == local_ip else "Unknown")
+
+                    # Update protocol counts
+                    protocol_counts[protocol] = protocol_counts.get(protocol, 0) + 1
+
+                    # Log entry
+                    log_entry = (f"[Packet #{packet_count}] Interface: {captured_interface} - {timestamp} - {protocol} - "
+                                 f"Length: {length} bytes - Source: {src_ip}:{src_port}, Destination: {dst_ip}:{dst_port} - "
+                                 f"Direction: {direction} - TCP Flags: {tcp_flags} - HTTP Method: {http_method} - "
+                                 f"TLS SNI: {tls_sni} - DNS Query: {dns_query}, DNS Response: {dns_response}\n")
                     f.write(log_entry)
                     # print(log_entry.strip())
-                except AttributeError:
-                    # Handle packets without IP attributes or missing fields
-                    continue
+                except AttributeError as attr_err:
+                    # Handle packets without expected attributes
+                    error_entry = f"[Error] Packet could not be parsed: {attr_err}\n"
+                    f.write(error_entry)
+                    # print(error_entry.strip())
+                except Exception as e:
+                    # Catch any unexpected errors during packet processing
+                    error_entry = f"[Error] Unexpected error: {e}\n"
+                    f.write(error_entry)
+                    # print(error_entry.strip())
     except Exception as e:
         print(f"Error capturing packets: {e}")
+
 
 
 def start_packet_capture_thread(log_file):
