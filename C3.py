@@ -13,8 +13,8 @@ from threading import Thread
 directory_to_monitor = "."
 backup_directory = "backup"
 backup_for_modification = False
-process_log = os.path.join(backup_directory, "process_log.txt")
-network_trace_log = os.path.join(backup_directory, "network_trace_log.txt")
+process_log = os.path.join("./backup", "process_log.txt")
+network_trace_log = os.path.join("./backup", "network_trace_log.txt")
 
 class ProcessMonitor:
     def __init__(self, log_file="process_log.txt", interval=0.01):
@@ -131,7 +131,7 @@ class FileActivityHandler(FileSystemEventHandler):
         """Handle file modification events."""
         if not event.is_directory:
             file_path = event.src_path
-            if (file_path == process_log):
+            if (file_path == process_log) or (file_path == network_trace_log):
                 return 0
             new_hash = self.compute_hash(file_path)
             # Check if the hash has changed
