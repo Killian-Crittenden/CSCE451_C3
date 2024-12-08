@@ -215,8 +215,8 @@ def main():
     observers = []
 
     # Create backup directory if not exist
-    if not os.path.exists(backup_dir):
-        os.makedirs(backup_dir)
+    if not os.path.exists(backup_directory):
+        os.makedirs(backup_directory)
 
     if len(sys.argv) > 1:
         for i in range(len(sys.argv)):
