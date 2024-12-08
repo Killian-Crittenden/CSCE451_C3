@@ -216,7 +216,7 @@ def main():
 
     # Create backup directory if not exist
     if not os.path.exists(backup_dir):
-    os.makedirs(backup_dir)
+        os.makedirs(backup_dir)
 
     if len(sys.argv) > 1:
         for i in range(len(sys.argv)):
