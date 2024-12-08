@@ -7,6 +7,7 @@ import time
 import subprocess
 import sys
 import psutil
+import pyshark
 from threading import Thread
 
 directory_to_monitor = "."
@@ -138,6 +139,67 @@ class FileActivityHandler(FileSystemEventHandler):
                 del self.file_hashes[file_path]
 
 
+def get_active_interface():
+    """
+    Determine the first active network interface.
+    Returns:
+        str: The name of the active interface, or None if no active interface is found.
+    """
+    interfaces = psutil.net_if_addrs()
+    stats = psutil.net_if_stats()
+
+    for iface, stat in stats.items():
+        if stat.isup and iface != "lo":  # Exclude loopback
+            return iface
+    return None  # No active interface found
+
+def capture_packets(log_file):
+    """
+    Capture network packets and log them to the specified log file.
+    Dynamically selects the active network interface.
+    """
+    try:
+        interface = get_active_interface()
+        if not interface:
+            print("No active network interface found. Exiting.")
+            return
+
+        print(f"Starting network packet capture on interface: {interface}")
+        capture = pyshark.LiveCapture(interface=interface, display_filter="dns or http or tls or tcp or udp or icmp")
+        
+        # Log packet data continuously
+        with open(log_file, "a") as f:
+            for packet in capture.sniff_continuously():
+                try:
+                    timestamp = packet.sniff_time
+                    protocol = packet.highest_layer
+                    length = packet.length
+                    src_ip = packet.ip.src if hasattr(packet, "ip") else "N/A"
+                    dst_ip = packet.ip.dst if hasattr(packet, "ip") else "N/A"
+                    captured_interface = packet.interface_captured_on if hasattr(packet, "interface_captured_on") else interface
+                    log_entry = (f"[Packet Capture] Interface: {captured_interface} - {timestamp} - {protocol} - "
+                                 f"Length: {length} bytes - Source: {src_ip}, Destination: {dst_ip}\n")
+                    f.write(log_entry)
+                    print(log_entry.strip())
+                except AttributeError:
+                    # Handle packets without IP attributes or missing fields
+                    continue
+    except Exception as e:
+        print(f"Error capturing packets: {e}")
+
+
+def start_packet_capture_thread(log_file):
+    """
+    Start the packet capture in a separate thread.
+    Dynamically selects the active network interface.
+    """
+    print("Starting packet capture thread...")
+    packet_capture_thread = Thread(target=capture_packets, args=(log_file,))
+    packet_capture_thread.daemon = True  # Allows the thread to exit when the main program exits
+    packet_capture_thread.start()
+    return packet_capture_thread
+
+
 def main():
     no_delete = False
 
@@ -147,6 +209,11 @@ def main():
                 print("no delete mode activated")
                 no_delete = True
                 result = subprocess.run(["sudo", "chattr", "-R", "+a", "."], capture_output=True, text=True)
+
+    # Ensure log files are cleared at startup
+    with open(network_trace_log, "w") as f:
+        f.write("Network Trace Log\n")
+        f.write("=" * 50 + "\n")
 
 
     # Create an event handler and observer
