@@ -11,7 +11,8 @@ import pyshark
 from threading import Thread
 
 directory_to_monitor = "."
-backup_directory = "./backup"
+backup_directory = "backup"
+backup_for_modification = False
 process_log = os.path.join(backup_directory, "process_log.txt")
 network_trace_log = os.path.join(backup_directory, "network_trace_log.txt")
 
@@ -94,10 +95,16 @@ class FileActivityHandler(FileSystemEventHandler):
 
     def backup_file(self, src_path):
         """Backup a file to the backup directory."""
+        global backup_for_modification
         if os.path.exists(src_path):
             file_name = os.path.basename(src_path)
+
+            if (backup_for_modification):
+                timestamp = int(time.time() * 1000000) #convert to us
+                file_name = f"{os.path.splitext(file_name)[0]}_{timestamp}{os.path.splitext(file_name)[1]}"
+    
             backup_path = os.path.join(self.backup_dir, file_name)
-            if (src_path == backup_path or src_path == network_trace_log):
+            if os.path.commonpath([src_path, self.backup_dir]) == self.backup_dir:
                 return 0    
             try:
                 shutil.copy2(src_path, backup_path)
@@ -205,6 +212,7 @@ def start_packet_capture_thread(log_file):
 
 
 def main():
+    global backup_for_modification
     no_delete = False
     dir_specified = False
     observers = []
@@ -222,6 +230,9 @@ def main():
                 observer = Observer()
                 observer.schedule(handler, path=dir, recursive=True)
                 observers.append(observer)
+            if (sys.argv[i]) == "-b":
+                backup_for_modification = True
+                print("Enabled backup on modification")
 
 
     # Ensure log files are cleared at startup
