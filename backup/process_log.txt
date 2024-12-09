@@ -1,9 +1,16 @@
 Process Monitor Log
 ==================================================
-[subprocess] New Process Detected - PID: 4978, Command: {'ppid': 1, 'user': 'root', 'command': 'init'}, Timestamp: Sun Dec  8 11:45:04 2024
-[psutil] New Process Detected - PID: 4978, Name: init, Command: ['/init'], Timestamp: Sun Dec  8 11:45:03 2024
-[subprocess] New Process Detected - PID: 4978, Command: {'ppid': 1, 'user': 'root', 'command': 'init'}, Timestamp: Sun Dec  8 11:45:04 2024
-[subprocess] New Process Detected - PID: 5151, Command: {'ppid': 1031, 'user': 'killian', 'command': 'ls'}, Timestamp: Sun Dec  8 11:45:09 2024
-[subprocess] New Process Detected - PID: 5622, Command: {'ppid': 1, 'user': 'root', 'command': 'init'}, Timestamp: Sun Dec  8 11:45:30 2024
-[psutil] New Process Detected - PID: 5622, Name: init, Command: ['/init'], Timestamp: Sun Dec  8 11:45:29 2024
-[subprocess] New Process Detected - PID: 5622, Command: {'ppid': 1, 'user': 'root', 'command': 'init'}, Timestamp: Sun Dec  8 11:45:30 2024
+[subprocess] New Process Detected - PID: 192305, Command: {'ppid': 192287, 'user': 'root', 'command': 'sdjournal'}, Timestamp: Sun Dec  8 20:29:42 2024
+[psutil] New Process Detected - PID: 192315, Name: tshark, Command: ['/usr/bin/tshark', '-v'], Timestamp: Sun Dec  8 20:29:42 2024
+[subprocess] New Process Detected - PID: 192337, Command: {'ppid': 192315, 'user': 'root', 'command': 'udpdump'}, Timestamp: Sun Dec  8 20:29:43 2024
+[psutil] New Process Detected - PID: 192340, Name: dumpcap, Command: ['/usr/bin/dumpcap', '-q', '-i', 'eth0', '-w', '-'], Timestamp: Sun Dec  8 20:29:42 2024
+[psutil] New Process Detected - PID: 192342, Name: tshark, Command: ['/usr/bin/tshark', '-D'], Timestamp: Sun Dec  8 20:29:42 2024
+[psutil] New Process Detected - PID: 192353, Name: androiddump, Command: ['/usr/lib/x86_64-linux-gnu/wireshark/extcap/androiddump', '--extcap-interfaces', '--extcap-version=3.4'], Timestamp: Sun Dec  8 20:29:42 2024
+[subprocess] New Process Detected - PID: 192353, Command: {'ppid': 192342, 'user': 'root', 'command': 'androiddump'}, Timestamp: Sun Dec  8 20:29:43 2024
+[subprocess] New Process Detected - PID: 192367, Command: {'ppid': 192342, 'user': 'root', 'command': 'sdjournal'}, Timestamp: Sun Dec  8 20:29:43 2024
+[psutil] New Process Detected - PID: 192369, Name: tshark, Command: ['/usr/bin/tshark', '-l', '-n', '-T', 'pdml', '-Y', 'dns or http or tls or tcp or udp or icmp', '-i', '-'], Timestamp: Sun Dec  8 20:29:42 2024
+[subprocess] New Process Detected - PID: 192380, Command: {'ppid': 192369, 'user': 'root', 'command': 'androiddump'}, Timestamp: Sun Dec  8 20:29:43 2024
+[subprocess] New Process Detected - PID: 192393, Command: {'ppid': 192369, 'user': 'root', 'command': 'udpdump'}, Timestamp: Sun Dec  8 20:29:43 2024
+[subprocess] New Process Detected - PID: 192396, Command: {'ppid': 192369, 'user': 'root', 'command': 'dumpcap'}, Timestamp: Sun Dec  8 20:29:43 2024
+[psutil] New Process Detected - PID: 192396, Name: dumpcap, Command: ['/usr/bin/dumpcap', '-n', '-i', '-', '-Z', 'none'], Timestamp: Sun Dec  8 20:29:43 2024
+[subprocess] New Process Detected - PID: 192396, Command: {'ppid': 192369, 'user': 'root', 'command': 'dumpcap'}, Timestamp: Sun Dec  8 20:29:43 2024

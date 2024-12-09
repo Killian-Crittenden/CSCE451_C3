@@ -1,2 +1,50 @@
 Network Trace Log
 ==================================================
+[Error] Packet could not be parsed: 
+[Packet #2] Interface: eth0 - 2024-12-08 20:29:45.167398 - TCP - Length: 60 bytes - Source: 142.250.113.102:443, Destination: 10.0.2.15:40036 - Direction: Inbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Packet #4] Interface: eth0 - 2024-12-08 20:29:45.167398 - TCP - Length: 60 bytes - Source: 142.250.113.102:443, Destination: 10.0.2.15:40036 - Direction: Inbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #5] Interface: eth0 - 2024-12-08 20:29:45.271294 - TCP - Length: 60 bytes - Source: 142.250.113.102:443, Destination: 10.0.2.15:40036 - Direction: Inbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Packet #7] Interface: eth0 - 2024-12-08 20:29:45.271315 - TCP - Length: 54 bytes - Source: 10.0.2.15:40036, Destination: 142.250.113.102:443 - Direction: Outbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Packet #9] Interface: eth0 - 2024-12-08 20:29:45.375264 - TCP - Length: 60 bytes - Source: 142.250.113.102:443, Destination: 10.0.2.15:40036 - Direction: Inbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Packet #11] Interface: eth0 - 2024-12-08 20:29:47.143322 - TCP - Length: 60 bytes - Source: 142.251.186.95:443, Destination: 10.0.2.15:60274 - Direction: Inbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Packet #13] Interface: eth0 - 2024-12-08 20:29:47.247571 - TCP - Length: 54 bytes - Source: 10.0.2.15:60274, Destination: 142.251.186.95:443 - Direction: Outbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Error] Packet could not be parsed: 
+[Packet #16] Interface: eth0 - 2024-12-08 20:29:50.795387 - TCP - Length: 60 bytes - Source: 140.82.114.25:443, Destination: 10.0.2.15:54370 - Direction: Inbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Error] Packet could not be parsed: 
+[Packet #19] Interface: eth0 - 2024-12-08 20:29:51.122687 - QUIC - Length: 1399 bytes - Source: 10.0.2.15:37767, Destination: 142.250.115.94:443 - Direction: Outbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #20] Interface: eth0 - 2024-12-08 20:29:51.128685 - QUIC - Length: 331 bytes - Source: 10.0.2.15:37767, Destination: 142.250.115.94:443 - Direction: Outbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #21] Interface: eth0 - 2024-12-08 20:29:51.211322 - DNS - Length: 91 bytes - Source: 192.168.0.1:53, Destination: 10.0.2.15:43949 - Direction: Inbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: ssl.gstatic.com, DNS Response: 142.250.115.94
+[Error] Packet could not be parsed: 
+[Packet #23] Interface: eth0 - 2024-12-08 20:29:51.211322 - QUIC - Length: 1399 bytes - Source: 142.250.115.94:443, Destination: 10.0.2.15:37767 - Direction: Inbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #24] Interface: eth0 - 2024-12-08 20:29:51.211322 - QUIC - Length: 657 bytes - Source: 142.250.115.94:443, Destination: 10.0.2.15:37767 - Direction: Inbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #25] Interface: eth0 - 2024-12-08 20:29:51.211322 - QUIC - Length: 72 bytes - Source: 142.250.115.94:443, Destination: 10.0.2.15:37767 - Direction: Inbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #26] Interface: eth0 - 2024-12-08 20:29:51.211322 - QUIC - Length: 562 bytes - Source: 142.250.115.94:443, Destination: 10.0.2.15:37767 - Direction: Inbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #27] Interface: eth0 - 2024-12-08 20:29:51.211322 - QUIC - Length: 67 bytes - Source: 142.250.115.94:443, Destination: 10.0.2.15:37767 - Direction: Inbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #28] Interface: eth0 - 2024-12-08 20:29:51.216609 - QUIC - Length: 205 bytes - Source: 10.0.2.15:37767, Destination: 142.250.115.94:443 - Direction: Outbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #29] Interface: eth0 - 2024-12-08 20:29:51.315445 - QUIC - Length: 165 bytes - Source: 142.250.115.94:443, Destination: 10.0.2.15:37767 - Direction: Inbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #30] Interface: eth0 - 2024-12-08 20:29:51.315445 - QUIC - Length: 69 bytes - Source: 142.250.115.94:443, Destination: 10.0.2.15:37767 - Direction: Inbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #31] Interface: eth0 - 2024-12-08 20:29:51.335906 - QUIC - Length: 74 bytes - Source: 10.0.2.15:37767, Destination: 142.250.115.94:443 - Direction: Outbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #32] Interface: eth0 - 2024-12-08 20:29:52.036084 - DATA - Length: 71 bytes - Source: 10.0.2.15:46702, Destination: 142.250.113.95:443 - Direction: Outbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Error] Packet could not be parsed: 
+[Packet #35] Interface: eth0 - 2024-12-08 20:29:52.147527 - DATA - Length: 71 bytes - Source: 142.250.113.95:443, Destination: 10.0.2.15:46702 - Direction: Inbound - TCP Flags: N/A - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #36] Interface: eth0 - 2024-12-08 20:29:52.147528 - TCP - Length: 60 bytes - Source: 142.251.186.95:443, Destination: 10.0.2.15:60484 - Direction: Inbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Packet #37] Interface: eth0 - 2024-12-08 20:29:52.147528 - TCP - Length: 60 bytes - Source: 142.250.113.101:443, Destination: 10.0.2.15:39506 - Direction: Inbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Packet #39] Interface: eth0 - 2024-12-08 20:29:52.147584 - TCP - Length: 54 bytes - Source: 10.0.2.15:39506, Destination: 142.250.113.101:443 - Direction: Outbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Packet #41] Interface: eth0 - 2024-12-08 20:29:52.147612 - TCP - Length: 54 bytes - Source: 10.0.2.15:60484, Destination: 142.251.186.95:443 - Direction: Outbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Packet #43] Interface: eth0 - 2024-12-08 20:29:53.187268 - TCP - Length: 60 bytes - Source: 142.251.186.95:443, Destination: 10.0.2.15:60274 - Direction: Inbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Packet #45] Interface: eth0 - 2024-12-08 20:29:53.187288 - TCP - Length: 54 bytes - Source: 10.0.2.15:60274, Destination: 142.251.186.95:443 - Direction: Outbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
+[Packet #47] Interface: eth0 - 2024-12-08 20:29:53.707532 - TCP - Length: 54 bytes - Source: 10.0.2.15:60272, Destination: 142.251.186.95:443 - Direction: Outbound - TCP Flags: ACK - HTTP Method: N/A - TLS SNI: N/A - DNS Query: N/A, DNS Response: N/A
+[Error] Packet could not be parsed: 
